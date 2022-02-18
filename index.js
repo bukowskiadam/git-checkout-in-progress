@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import got from "got";
 import { execSync } from "child_process";
+import got from "got";
+import inquirer from "inquirer";
 
 const {
   GIT_CIP_GITHUB_TOKEN: githubToken,
@@ -86,7 +87,30 @@ function createTitle(title) {
 
 async function run() {
   const issuesInProgress = await getIssuesInProgress();
-  const selectedIssue = issuesInProgress[0];
+  let selectedIssue;
+
+  switch (issuesInProgress.length) {
+    case 0:
+      panic("No issues in progress");
+    case 1:
+      selectedIssue = issuesInProgress[0];
+      break;
+    default:
+      const { issue } = await inquirer.prompt([
+        {
+          type: "list",
+          name: "issue",
+          message: "Choose an issue",
+          choices: issuesInProgress.map((issue) => ({
+            name: `#${issue.number}: ${issue.title}`,
+            value: issue,
+          })),
+        },
+      ]);
+
+      selectedIssue = issue;
+  }
+
   const branchName = branchNameTemplate
     .replace("{number}", selectedIssue.number)
     .replace("{title}", createTitle(selectedIssue.title));
