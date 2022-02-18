@@ -81,7 +81,7 @@ function createGitBranch(branchName) {
 }
 
 function createTitle(title) {
-  return title.toLowerCase().replace(/[\s~^:./\\]/g, "-");
+  return title.toLowerCase().replace(/[^a-zA-Z0-9]/g, "-");
 }
 
 async function run() {
