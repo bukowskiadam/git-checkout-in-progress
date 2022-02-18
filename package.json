@@ -1,0 +1,19 @@
+{
+  "name": "@abukowski/git-cip",
+  "version": "1.0.0",
+  "description": "Allows you to easily create a new branch based on your zenhub in progress issue",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "git-cip": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Bukowski <bukowski.adam@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "gh-got": "^9.0.0",
+    "got": "^12.0.1"
+  }
+}
