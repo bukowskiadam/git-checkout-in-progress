@@ -13,7 +13,6 @@
   "author": "Adam Bukowski <bukowski.adam@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "gh-got": "^9.0.0",
     "got": "^12.0.1",
     "inquirer": "^8.2.0"
   }
