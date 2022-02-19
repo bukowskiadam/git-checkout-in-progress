@@ -9,6 +9,8 @@ const {
   GIT_CIP_GITHUB_API_URL: githubApiUrl,
   GIT_CIP_ZENHUB_TOKEN: zenhubToken,
   GIT_CIP_ZENHUB_API_URL: zenhubApiUrl,
+  GIT_CIP_ZENHUB_WORKSPACE_ID: zenhubWorkspaceId,
+  GIT_CIP_ZENHUB_REPO_ID: zenhubRepoId,
   GIT_CIP_ZENHUB_IN_PROGRESS_PIPELINE: inProgressPipelineName,
   GIT_CIP_TEMPLATE: branchNameTemplate,
 } = process.env;
@@ -18,6 +20,8 @@ const missingEnvs = [
   "GIT_CIP_GITHUB_API_URL",
   "GIT_CIP_ZENHUB_TOKEN",
   "GIT_CIP_ZENHUB_API_URL",
+  "GIT_CIP_ZENHUB_WORKSPACE_ID",
+  "GIT_CIP_ZENHUB_REPO_ID",
   "GIT_CIP_ZENHUB_IN_PROGRESS_PIPELINE",
   "GIT_CIP_TEMPLATE",
 ].filter((env) => !process.env[env]);
@@ -51,11 +55,14 @@ async function getIssuesInProgress() {
   }
 
   try {
-    zenhubBoard = await got(`${zenhubApiUrl}/p1/repositories/39456/board`, {
-      headers: {
-        "X-Authentication-Token": zenhubToken,
-      },
-    }).json();
+    zenhubBoard = await got(
+      `${zenhubApiUrl}/p2/workspaces/${zenhubWorkspaceId}/repositories/${zenhubRepoId}/board`,
+      {
+        headers: {
+          "X-Authentication-Token": zenhubToken,
+        },
+      }
+    ).json();
   } catch (error) {
     panic("Error fetching zenhub board: ", error.toString());
   }
