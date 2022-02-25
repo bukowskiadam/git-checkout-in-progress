@@ -25,30 +25,12 @@ const configValues = [
     name: "zenhubApiUrl",
     message: "ZenHub API URL",
     default: "https://api.zenhub.com/",
-    validate: Boolean,
   },
   {
     name: "zenhubToken",
     message: "ZenHub Token",
     type: "password",
     mask: "*",
-    validate: Boolean,
-  },
-  {
-    name: "zenhubWorkspaceId",
-    message: "ZenHub Workspace ID",
-    validate: Boolean,
-  },
-  {
-    name: "zenhubRepoId",
-    message: "ZenHub Repo ID",
-    validate: Boolean,
-  },
-  {
-    name: "inProgressPipelineName",
-    message: 'Name of the "In progress" pipeline (case-insensitive)',
-    default: "in progress",
-    validate: Boolean,
   },
   {
     name: "branchNameTemplate",
@@ -88,6 +70,7 @@ export async function getSettings() {
   const settings = await getRawSettings();
 
   const missingSettings = configValues
+    .filter((config) => !!config.validate) // only required
     .map((config) => config.name)
     .filter((configName) => !settings[configName]);
 

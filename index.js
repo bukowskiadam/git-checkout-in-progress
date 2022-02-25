@@ -1,70 +1,48 @@
 #!/usr/bin/env node
 
-import { execSync } from "node:child_process";
-import got from "got";
 import inquirer from "inquirer";
+
 import { getSettings } from "./setup.js";
+import { createGitBranch } from "./git.js";
+import { Github } from "./github.js";
+import { Zenhub } from "./zenhub.js";
+import { panic } from "./utils.js";
 
-function panic(message) {
-  console.error(message);
-  process.exit(1);
+function formatIssue(issue) {
+  const listPipelines = (zenhubData) => {
+    if (!zenhubData) {
+      return "";
+    }
+    const pipelines = zenhubData.pipelines.map(({ name }) => `[${name}]`);
+    return pipelines.join(" ") + " ";
+  };
+
+  return [
+    listPipelines(issue.zenhubData),
+    issue.repoName,
+    `#${issue.number}: `,
+    issue.title,
+  ].join("");
 }
 
-async function getIssuesInProgress({
-  githubApiUrl,
-  githubToken,
-  zenhubApiUrl,
-  zenhubToken,
-  zenhubWorkspaceId,
-  zenhubRepoId,
-  inProgressPipelineName,
-}) {
-  let openIssues;
-  let zenhubBoard;
+async function getIssuesChoiceList({ github, zenhub }) {
+  const openIssues = await github.fetchOpenIssues();
 
-  try {
-    openIssues = await got(`${githubApiUrl}/v3/issues`, {
-      headers: {
-        accept: "application/vnd.github.inertia-preview+json",
-        authorization: `token ${githubToken}`,
-      },
-    }).json();
-  } catch (error) {
-    panic("Error fetching github issues: ", error.toString());
-  }
-
-  try {
-    zenhubBoard = await got(
-      `${zenhubApiUrl}/p2/workspaces/${zenhubWorkspaceId}/repositories/${zenhubRepoId}/board`,
-      {
-        headers: {
-          "X-Authentication-Token": zenhubToken,
-        },
-      }
-    ).json();
-  } catch (error) {
-    panic("Error fetching zenhub board: ", error.toString());
-  }
-
-  const inProgressPipeline = zenhubBoard.pipelines.find(
-    (pipeline) => pipeline.name.toLowerCase() === inProgressPipelineName
+  const issues = await Promise.all(
+    openIssues.map(async (issue) => ({
+      number: issue.number,
+      title: issue.title,
+      repoName: issue.repository.full_name,
+      zenhubData:
+        zenhub &&
+        (await zenhub.fetchIssueData(issue.repository.id, issue.number)),
+    }))
   );
-  const issuesInProgress = inProgressPipeline.issues
-    .map((issue) =>
-      openIssues.find((openIssue) => openIssue.number === issue.issue_number)
-    )
-    .filter(Boolean);
 
-  return issuesInProgress;
-}
-
-function createGitBranch(branchName) {
-  const branchExists = execSync(`git branch -l "${branchName}"`)?.toString();
-  if (!branchExists) {
-    execSync(`git branch "${branchName}"`);
-    console.log(`Created branch: ${branchName}`);
-  }
-  execSync(`git checkout "${branchName}"`);
+  return issues.map((issue) => ({
+    name: formatIssue(issue),
+    value: issue,
+  }));
 }
 
 function createTitle(title) {
@@ -73,34 +51,27 @@ function createTitle(title) {
 
 async function run() {
   const settings = await getSettings();
-  const issuesInProgress = await getIssuesInProgress(settings);
-  let selectedIssue;
+  const github = Github(settings);
+  const zenhub = Zenhub(settings);
 
-  switch (issuesInProgress.length) {
-    case 0:
-      panic("No issues in progress");
-    case 1:
-      selectedIssue = issuesInProgress[0];
-      break;
-    default:
-      const { issue } = await inquirer.prompt([
-        {
-          type: "list",
-          name: "issue",
-          message: "Choose an issue",
-          choices: issuesInProgress.map((issue) => ({
-            name: `#${issue.number}: ${issue.title}`,
-            value: issue,
-          })),
-        },
-      ]);
+  const issues = await getIssuesChoiceList({ github, zenhub });
 
-      selectedIssue = issue;
+  if (issues.length === 0) {
+    panic("You have no open issues");
   }
 
+  const { issue } = await inquirer.prompt([
+    {
+      type: "list",
+      name: "issue",
+      message: "Choose an issue",
+      choices: issues,
+    },
+  ]);
+
   const branchName = settings.branchNameTemplate
-    .replace("{number}", selectedIssue.number)
-    .replace("{title}", createTitle(selectedIssue.title));
+    .replace("{number}", issue.number)
+    .replace("{title}", createTitle(issue.title));
 
   createGitBranch(branchName);
 }
