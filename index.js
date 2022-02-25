@@ -1,45 +1,24 @@
 #!/usr/bin/env node
 
-import { execSync } from "child_process";
+import { execSync } from "node:child_process";
 import got from "got";
 import inquirer from "inquirer";
-
-const {
-  GIT_CIP_GITHUB_TOKEN: githubToken,
-  GIT_CIP_GITHUB_API_URL: githubApiUrl,
-  GIT_CIP_ZENHUB_TOKEN: zenhubToken,
-  GIT_CIP_ZENHUB_API_URL: zenhubApiUrl,
-  GIT_CIP_ZENHUB_WORKSPACE_ID: zenhubWorkspaceId,
-  GIT_CIP_ZENHUB_REPO_ID: zenhubRepoId,
-  GIT_CIP_ZENHUB_IN_PROGRESS_PIPELINE: inProgressPipelineName,
-  GIT_CIP_TEMPLATE: branchNameTemplate,
-} = process.env;
-
-const missingEnvs = [
-  "GIT_CIP_GITHUB_TOKEN",
-  "GIT_CIP_GITHUB_API_URL",
-  "GIT_CIP_ZENHUB_TOKEN",
-  "GIT_CIP_ZENHUB_API_URL",
-  "GIT_CIP_ZENHUB_WORKSPACE_ID",
-  "GIT_CIP_ZENHUB_REPO_ID",
-  "GIT_CIP_ZENHUB_IN_PROGRESS_PIPELINE",
-  "GIT_CIP_TEMPLATE",
-].filter((env) => !process.env[env]);
-
-if (missingEnvs.length) {
-  panic(
-    `Configuration environment variables missing:\n - ${missingEnvs.join(
-      "\n - "
-    )}`
-  );
-}
+import { getSettings } from "./setup.js";
 
 function panic(message) {
   console.error(message);
   process.exit(1);
 }
 
-async function getIssuesInProgress() {
+async function getIssuesInProgress({
+  githubApiUrl,
+  githubToken,
+  zenhubApiUrl,
+  zenhubToken,
+  zenhubWorkspaceId,
+  zenhubRepoId,
+  inProgressPipelineName,
+}) {
   let openIssues;
   let zenhubBoard;
 
@@ -93,7 +72,8 @@ function createTitle(title) {
 }
 
 async function run() {
-  const issuesInProgress = await getIssuesInProgress();
+  const settings = await getSettings();
+  const issuesInProgress = await getIssuesInProgress(settings);
   let selectedIssue;
 
   switch (issuesInProgress.length) {
@@ -118,7 +98,7 @@ async function run() {
       selectedIssue = issue;
   }
 
-  const branchName = branchNameTemplate
+  const branchName = settings.branchNameTemplate
     .replace("{number}", selectedIssue.number)
     .replace("{title}", createTitle(selectedIssue.title));
 
