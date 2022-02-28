@@ -1,7 +1,7 @@
 {
   "name": "@abukowski/git-cip",
   "version": "1.0.0",
-  "description": "Allows you to easily create a new branch based on your zenhub in progress issue",
+  "description": "Allows you to easily create a new branch based on one of your opened github issues",
   "type": "module",
   "main": "index.js",
   "bin": {
@@ -12,6 +12,10 @@
   },
   "author": "Adam Bukowski <bukowski.adam@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bukowskiadam/git-checkout-in-progress.git"
+  },
   "dependencies": {
     "commander": "^9.0.0",
     "conf": "^10.1.1",

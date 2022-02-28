@@ -1,5 +1,32 @@
 # Git Checkout In-Progress
 
+Allows you to easily create a new branch based on one of your opened github issues.
+
+It can also sync with ZenHub to fetch pipeline name for the issues, so it is easier
+to identify your issues.
+
+## Installation
+
+This CLI is ESM module only. Make sure you use some recent version of Node.
+
+```
+npm install -g @abukowski/git-cip
+```
+
+It should add `git-cip` executable to your shell.
+You can execute it like any other git commands
+
+```
+git cip
+```
+
+**Note:** keep in mind that global installation might add binary just for a currently
+selected version of Node. Switching node versions with `nvm`, or `fnm` might make
+command unavailable.
+
+You can use mix of shell aliases and `nvm exec` / `fnm exec` to always execute
+this CLI with a specific version of Node.
+
 ## Configuration
 
 During the first run you'll get prompted for all needed configuration options.
