@@ -50,8 +50,13 @@ async function saveSettings(settings) {
 
   config.set(nonSecretSettings);
 
-  await keytar.setPassword(APP_NAME, "githubToken", githubToken);
-  await keytar.setPassword(APP_NAME, "zenhubToken", zenhubToken);
+  if (githubToken) {
+    await keytar.setPassword(APP_NAME, "githubToken", githubToken);
+  }
+
+  if (zenhubToken) {
+    await keytar.setPassword(APP_NAME, "zenhubToken", zenhubToken);
+  }
 }
 
 export async function getRawSettings() {

@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 
-import { getSettings, getRawSettings, reconfigure } from "./setup.js";
+import { getSettings, getRawSettings, reconfigure } from "./setttings.js";
 import { createGitBranch } from "./git.js";
 import { Github } from "./github.js";
 import { Zenhub } from "./zenhub.js";
