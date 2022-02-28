@@ -1,7 +1,4 @@
-#!/usr/bin/env node
-
 import inquirer from "inquirer";
-import { program } from "commander";
 
 import { getSettings, getRawSettings, reconfigure } from "./setup.js";
 import { createGitBranch } from "./git.js";
@@ -77,25 +74,4 @@ async function run() {
   createGitBranch(branchName);
 }
 
-program
-  .name("git cip")
-  .description("It helps to create a branch for one of your open issues")
-  .action(() => {
-    run();
-  });
-
-program
-  .command("config")
-  .description("Prints current configuration")
-  .action(async () => {
-    console.log(await getRawSettings());
-  });
-
-program
-  .command("reconfigure")
-  .description("Runs config prompt again")
-  .action(() => {
-    reconfigure();
-  });
-
-program.parse();
+export { run, getRawSettings, reconfigure };
