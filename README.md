@@ -43,6 +43,12 @@ Zenhub integration is optional and you can skip providing a zenhub token.
   - `{number}` - issue number
   - `{title}` - issue title containing only letters and numbers and a dash character (`-`) which replaces all other characters
 
+**Config storage**
+
+You API keys are stored in a secured keychain using [keytar](https://github.com/atom/node-keytar) package.
+
+Non-secret config is stored using [conf](https://github.com/sindresorhus/conf) package.
+
 ## CLI options and commands
 
 ```
