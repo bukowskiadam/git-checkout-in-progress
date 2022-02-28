@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import inquirer from "inquirer";
+import { program } from "commander";
 
-import { getSettings } from "./setup.js";
+import { getSettings, getRawSettings, reconfigure } from "./setup.js";
 import { createGitBranch } from "./git.js";
 import { Github } from "./github.js";
 import { Zenhub } from "./zenhub.js";
@@ -76,4 +77,25 @@ async function run() {
   createGitBranch(branchName);
 }
 
-run();
+program
+  .name("git cip")
+  .description("It helps to create a branch for one of your open issues")
+  .action(() => {
+    run();
+  });
+
+program
+  .command("config")
+  .description("Prints current configuration")
+  .action(async () => {
+    console.log(await getRawSettings());
+  });
+
+program
+  .command("reconfigure")
+  .description("Runs config prompt again")
+  .action(() => {
+    reconfigure();
+  });
+
+program.parse();

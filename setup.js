@@ -7,7 +7,7 @@ const { username } = OS.userInfo();
 const APP_NAME = "git-cip";
 
 const config = new Conf();
-const configValues = [
+const configSchema = [
   {
     name: "githubApiUrl",
     message: "Github API URL",
@@ -39,8 +39,8 @@ const configValues = [
   },
 ];
 
-async function promptUserSettings(existingConfig) {
-  const settings = await inquirer.prompt(configValues, existingConfig);
+async function promptUserSettings(existingConfig, schema = configSchema) {
+  const settings = await inquirer.prompt(schema, existingConfig);
 
   return settings;
 }
@@ -54,7 +54,7 @@ async function saveSettings(settings) {
   await keytar.setPassword(APP_NAME, "zenhubToken", zenhubToken);
 }
 
-async function getRawSettings() {
+export async function getRawSettings() {
   const settings = { ...config.store };
 
   const githubToken = await keytar.getPassword(APP_NAME, "githubToken");
@@ -69,7 +69,7 @@ async function getRawSettings() {
 export async function getSettings() {
   const settings = await getRawSettings();
 
-  const missingSettings = configValues
+  const missingSettings = configSchema
     .filter((config) => !!config.validate) // only required
     .map((config) => config.name)
     .filter((configName) => !settings[configName]);
@@ -91,4 +91,16 @@ export async function cleanupSettings() {
   await keytar.deletePassword(APP_NAME, "zenhubToken");
 
   config.clear();
+}
+
+export async function reconfigure() {
+  const settings = await getRawSettings();
+
+  const schema = configSchema.map((option) => ({
+    ...option,
+    default: settings[option.name],
+  }));
+  const newSettings = await promptUserSettings({}, schema);
+
+  await saveSettings(newSettings);
 }

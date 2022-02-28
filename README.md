@@ -15,3 +15,18 @@ Zenhub integration is optional and you can skip providing a zenhub token.
 - template - branch name template of your choice. Can contain following replacement tags:
   - `{number}` - issue number
   - `{title}` - issue title containing only letters and numbers and a dash character (`-`) which replaces all other characters
+
+## CLI options and commands
+
+```
+Usage: git cip [options] [command]
+
+It helps to create a branch for one of your open issues
+
+Options:
+  -h, --help   display help for command
+
+Commands:
+  config       Prints current configuration
+  reconfigure  Runs config prompt again
+```
