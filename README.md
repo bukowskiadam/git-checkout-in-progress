@@ -10,7 +10,7 @@ to identify your issues.
 This CLI is ESM module only. Make sure you use some recent version of Node.
 
 ```
-npm install -g @abukowski/git-cip
+npm install -g git-cip
 ```
 
 It should add `git-cip` executable to your shell.

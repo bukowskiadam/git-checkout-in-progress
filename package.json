@@ -1,5 +1,5 @@
 {
-  "name": "@abukowski/git-cip",
+  "name": "git-cip",
   "version": "1.0.0",
   "description": "Allows you to easily create a new branch based on one of your opened github issues",
   "type": "module",
