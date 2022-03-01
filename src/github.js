@@ -12,7 +12,11 @@ export function Github({ githubApiUrl, githubToken }) {
         },
       }).json();
     } catch (error) {
-      panic("Error fetching github issues: ", error.toString());
+      panic(
+        "We've got a problem fetching your github issues list.\n" +
+          "Make sure you've got some issues assigned to you or your token has control over private repositories.\n",
+        error.toString()
+      );
     }
   };
 
