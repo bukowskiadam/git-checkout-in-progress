@@ -5,7 +5,7 @@ import { panic } from "./utils.js";
 export function Github({ githubApiUrl, githubToken }) {
   const fetchOpenIssues = async () => {
     try {
-      return await got(`${githubApiUrl}/v3/issues`, {
+      return await got(`${githubApiUrl}/issues`, {
         headers: {
           accept: "application/vnd.github.inertia-preview+json",
           authorization: `token ${githubToken}`,

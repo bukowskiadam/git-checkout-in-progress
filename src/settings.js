@@ -11,7 +11,7 @@ const configSchema = [
   {
     name: "githubApiUrl",
     message: "Github API URL",
-    default: "https://api.github.com/",
+    default: "https://api.github.com",
     validate: Boolean,
   },
   {
@@ -24,7 +24,7 @@ const configSchema = [
   {
     name: "zenhubApiUrl",
     message: "ZenHub API URL",
-    default: "https://api.zenhub.com/",
+    default: "https://api.zenhub.com",
   },
   {
     name: "zenhubToken",
