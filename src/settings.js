@@ -6,7 +6,10 @@ import keytar from "keytar";
 const { username } = OS.userInfo();
 const APP_NAME = "git-cip";
 
-const config = new Conf();
+const config = new Conf({
+  projectName: "git-cip",
+});
+
 const configSchema = [
   {
     name: "githubApiUrl",
