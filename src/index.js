@@ -1,6 +1,11 @@
 import inquirer from "inquirer";
 
-import { getSettings, getRawSettings, reconfigure } from "./settings.js";
+import {
+  getSettingsWithPrompt,
+  getSettings,
+  reconfigure,
+  clearSettings,
+} from "./settings.js";
 import { createGitBranch } from "./git.js";
 import { Github } from "./github.js";
 import { Zenhub } from "./zenhub.js";
@@ -51,7 +56,7 @@ function createTitle(title) {
 }
 
 async function run() {
-  const settings = await getSettings();
+  const settings = await getSettingsWithPrompt();
   const github = Github(settings);
   const zenhub = Zenhub(settings);
 
@@ -77,4 +82,4 @@ async function run() {
   createGitBranch(branchName);
 }
 
-export { run, getRawSettings, reconfigure };
+export { run, getSettings, reconfigure, clearSettings };

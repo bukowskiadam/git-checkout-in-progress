@@ -2,7 +2,7 @@
 
 import { program } from "commander";
 
-import { run, getRawSettings, reconfigure } from "./src/index.js";
+import { run, getSettings, reconfigure, clearSettings } from "./src/index.js";
 
 program
   .name("git cip")
@@ -15,7 +15,7 @@ program
   .command("config")
   .description("Prints current configuration")
   .action(async () => {
-    console.log(await getRawSettings());
+    console.log(await getSettings());
   });
 
 program
@@ -23,6 +23,13 @@ program
   .description("Runs config prompt again")
   .action(() => {
     reconfigure();
+  });
+
+program
+  .command("reset-config")
+  .description("Clears config data")
+  .action(() => {
+    clearSettings();
   });
 
 program.parse();

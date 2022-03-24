@@ -62,7 +62,7 @@ async function saveSettings(settings) {
   }
 }
 
-export async function getRawSettings() {
+export async function getSettings() {
   const settings = { ...config.store };
 
   const githubToken = await keytar.getPassword(APP_NAME, "githubToken");
@@ -74,8 +74,8 @@ export async function getRawSettings() {
   return settings;
 }
 
-export async function getSettings() {
-  const settings = await getRawSettings();
+export async function getSettingsWithPrompt() {
+  const settings = await getSettings();
 
   const missingSettings = configSchema
     .filter((config) => !!config.validate) // only required
@@ -88,13 +88,13 @@ export async function getSettings() {
     const newSettings = await promptUserSettings(settings);
     await saveSettings(newSettings);
 
-    return getSettings();
+    return getSettingsWithPrompt();
   }
 
   return settings;
 }
 
-export async function cleanupSettings() {
+export async function clearSettings() {
   await keytar.deletePassword(APP_NAME, "githubToken");
   await keytar.deletePassword(APP_NAME, "zenhubToken");
 
@@ -102,7 +102,7 @@ export async function cleanupSettings() {
 }
 
 export async function reconfigure() {
-  const settings = await getRawSettings();
+  const settings = await getSettings();
 
   const schema = configSchema.map((option) => ({
     ...option,
