@@ -11,8 +11,11 @@ function formatIssue(issue) {
     if (!zenhubData) {
       return "";
     }
-    const pipelines = zenhubData.pipelines.map(({ name }) => `[${name}]`);
-    return pipelines.join(" ") + " ";
+
+    const { pipelines = [] } = zenhubData || {};
+    const pipelinesNames = pipelines.map(({ name }) => `[${name}]`);
+
+    return pipelinesNames.join(" ") + " ";
   };
 
   return [
