@@ -16,6 +16,14 @@
     "type": "git",
     "url": "https://github.com/bukowskiadam/git-checkout-in-progress.git"
   },
+  "keywords": [
+    "git",
+    "github",
+    "zenhub",
+    "node",
+    "cli",
+    "branch"
+  ],
   "dependencies": {
     "commander": "^9.0.0",
     "conf": "^10.1.1",
