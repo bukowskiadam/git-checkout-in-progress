@@ -9,47 +9,9 @@ import {
 import { createGitBranch } from "./git.js";
 import { Github } from "./github.js";
 import { Zenhub } from "./zenhub.js";
+import { getIssuesChoiceList } from "./issues.js";
+import { askPrefilledQuestion } from "./user-input.js";
 import { panic } from "./utils.js";
-
-function formatIssue(issue) {
-  const listPipelines = (zenhubData) => {
-    if (!zenhubData) {
-      return "";
-    }
-
-    const { pipelines = [] } = zenhubData || {};
-    const pipelinesNames = pipelines.map(({ name }) => `[${name}]`);
-
-    return pipelinesNames.join(" ") + " ";
-  };
-
-  return [
-    listPipelines(issue.zenhubData),
-    issue.repoName,
-    `#${issue.number}: `,
-    issue.title,
-  ].join("");
-}
-
-async function getIssuesChoiceList({ github, zenhub }) {
-  const openIssues = await github.fetchOpenIssues();
-
-  const issues = await Promise.all(
-    openIssues.map(async (issue) => ({
-      number: issue.number,
-      title: issue.title,
-      repoName: issue.repository.full_name,
-      zenhubData:
-        zenhub &&
-        (await zenhub.fetchIssueData(issue.repository.id, issue.number)),
-    }))
-  );
-
-  return issues.map((issue) => ({
-    name: formatIssue(issue),
-    value: issue,
-  }));
-}
 
 function createTitle(title) {
   return title.toLowerCase().replace(/[^a-zA-Z0-9]/g, "-");
@@ -79,7 +41,12 @@ async function run() {
     .replace("{number}", issue.number)
     .replace("{title}", createTitle(issue.title));
 
-  createGitBranch(branchName);
+  const adjustedBranchName = await askPrefilledQuestion(
+    "\nNow you can edit your branch name\n\nBranch name: ",
+    branchName
+  );
+
+  createGitBranch(adjustedBranchName);
 }
 
 export { run, getSettings, reconfigure, clearSettings };
