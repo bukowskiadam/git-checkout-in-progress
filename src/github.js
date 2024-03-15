@@ -3,9 +3,11 @@ import got from "got";
 import { panic } from "./utils.js";
 
 export function Github({ githubApiUrl, githubToken }) {
+  const issuesUrl = `${githubApiUrl.replace(/\/$/, "")}/issues`;
+
   const fetchOpenIssues = async () => {
     try {
-      return await got(`${githubApiUrl}/issues`, {
+      return await got(issuesUrl, {
         headers: {
           accept: "application/vnd.github.inertia-preview+json",
           authorization: `token ${githubToken}`,
