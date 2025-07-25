@@ -25,17 +25,6 @@ const configSchema = [
     validate: Boolean,
   },
   {
-    name: "zenhubApiUrl",
-    message: "ZenHub API URL",
-    default: "https://api.zenhub.com",
-  },
-  {
-    name: "zenhubToken",
-    message: "ZenHub Token",
-    type: "password",
-    mask: "*",
-  },
-  {
     name: "branchNameTemplate",
     default: `${username}/{number}/{title}`,
     validate: Boolean,
@@ -49,16 +38,12 @@ async function promptUserSettings(existingConfig, schema = configSchema) {
 }
 
 async function saveSettings(settings) {
-  const { githubToken, zenhubToken, ...nonSecretSettings } = settings;
+  const { githubToken, ...nonSecretSettings } = settings;
 
   config.set(nonSecretSettings);
 
   if (githubToken) {
     await keytar.setPassword(APP_NAME, "githubToken", githubToken);
-  }
-
-  if (zenhubToken) {
-    await keytar.setPassword(APP_NAME, "zenhubToken", zenhubToken);
   }
 }
 
@@ -66,10 +51,17 @@ export async function getSettings() {
   const settings = { ...config.store };
 
   const githubToken = await keytar.getPassword(APP_NAME, "githubToken");
-  const zenhubToken = await keytar.getPassword(APP_NAME, "zenhubToken");
 
-  githubToken && (settings.githubToken = githubToken);
-  zenhubToken && (settings.zenhubToken = zenhubToken);
+  if (githubToken) {
+    settings.githubToken = githubToken;
+  }
+
+  // remove old ZenHub API URL and credentials if it exists
+  if ('zenhubApiUrl' in settings) {
+    delete settings.zenhubApiUrl;
+    await saveSettings(settings);
+    await keytar.deletePassword(APP_NAME, "zenhubApiUrl");
+  }
 
   return settings;
 }
@@ -96,7 +88,6 @@ export async function getSettingsWithPrompt() {
 
 export async function clearSettings() {
   await keytar.deletePassword(APP_NAME, "githubToken");
-  await keytar.deletePassword(APP_NAME, "zenhubToken");
 
   config.clear();
 }
