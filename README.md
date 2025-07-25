@@ -55,4 +55,27 @@ Options:
 Commands:
   config       Prints current configuration
   reconfigure  Runs config prompt again
+  reset-config Clears config data
+```
+
+## Features
+
+- ✅ **Branch Name Validation**: Ensures valid Git branch names
+- 🔒 **Secure Storage**: API tokens stored securely in system keychain
+- 🎯 **Multi-Repository Support**: Works with issues from all your repositories
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run full check (lint + format)
+npm run check
+
+# Fix all issues (lint + format)
+npm run check:fix
+
+# Test locally
+npm run dev
 ```
