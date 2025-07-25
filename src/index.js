@@ -25,14 +25,38 @@ async function run() {
 		panic("You have no open issues");
 	}
 
-	const { issue } = await inquirer.prompt([
-		{
-			type: "list",
-			name: "issue",
-			message: "Choose an issue",
-			choices: issues,
-		},
-	]);
+	// Add quit options to the choices
+	const choicesWithQuit = [
+		...issues,
+		new inquirer.Separator(),
+		{ name: "Quit (q)", value: "quit" },
+	];
+
+	let issue;
+	try {
+		const result = await inquirer.prompt([
+			{
+				type: "list",
+				name: "issue",
+				message: "Choose an issue (Press 'q' to quit, Ctrl+C to exit)",
+				choices: choicesWithQuit,
+				pageSize: 15,
+			},
+		]);
+		
+		if (result.issue === "quit") {
+			console.log("Operation cancelled.");
+			process.exit(0);
+		}
+		
+		issue = result.issue;
+	} catch (error) {
+		if (error.name === 'ExitPromptError') {
+			console.log('\nOperation cancelled by user.');
+			process.exit(0);
+		}
+		throw error;
+	}
 
 	const branchName = settings.branchNameTemplate
 		.replace("{number}", issue.number)

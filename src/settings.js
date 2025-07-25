@@ -37,9 +37,16 @@ const configSchema = [
 ];
 
 async function promptUserSettings(existingConfig, schema = configSchema) {
-  const settings = await inquirer.prompt(schema, existingConfig);
-
-  return settings;
+  try {
+    const settings = await inquirer.prompt(schema, existingConfig);
+    return settings;
+  } catch (error) {
+    if (error.name === 'ExitPromptError') {
+      console.log('\nOperation cancelled by user.');
+      process.exit(0);
+    }
+    throw error;
+  }
 }
 
 async function saveSettings(settings) {
