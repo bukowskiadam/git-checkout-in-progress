@@ -10,6 +10,33 @@ function createTitle(title) {
   return title.toLowerCase().replace(/[^a-zA-Z0-9]/g, "-");
 }
 
+function validateBranchName(branchName) {
+  // Git branch name validation rules
+  const invalidPatterns = [
+    /^\./, // Cannot start with a dot
+    /\.\.|@@|\.\.|~|\^|:|\[|\*|\?|\\/, // Invalid characters/sequences
+    /\/$/, // Cannot end with slash
+    /\.lock$/, // Cannot end with .lock
+    /^\/|\/\//, // Cannot start with slash or contain double slash
+  ];
+
+  if (!branchName || branchName.trim() === "") {
+    return "Branch name cannot be empty";
+  }
+
+  if (branchName.length > 250) {
+    return "Branch name is too long (max 250 characters)";
+  }
+
+  for (const pattern of invalidPatterns) {
+    if (pattern.test(branchName)) {
+      return "Invalid branch name format";
+    }
+  }
+
+  return true;
+}
+
 async function run() {
   const settings = await getSettingsWithPrompt();
   const github = Github(settings);
@@ -60,6 +87,7 @@ async function run() {
   const adjustedBranchName = await askPrefilledQuestion(
     "\nNow you can edit your branch name\n\nBranch name: ",
     branchName,
+    validateBranchName,
   );
 
   createGitBranch(adjustedBranchName);
