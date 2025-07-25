@@ -1,5 +1,3 @@
-import got from "got";
-
 import { panic } from "./utils.js";
 
 export function Github({ githubApiUrl, githubToken }) {
@@ -7,12 +5,18 @@ export function Github({ githubApiUrl, githubToken }) {
 
   const fetchOpenIssues = async () => {
     try {
-      return await got(issuesUrl, {
+      const response = await fetch(issuesUrl, {
         headers: {
           accept: "application/vnd.github.inertia-preview+json",
           authorization: `token ${githubToken}`,
         },
-      }).json();
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return await response.json();
     } catch (error) {
       panic(
         "We've got a problem fetching your github issues list.\n" +
