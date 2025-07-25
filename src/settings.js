@@ -22,10 +22,15 @@ const configSchema = [
     message: "Github Personal Token",
     type: "password",
     mask: "*",
-    validate: Boolean,
+    validate: async (newToken) => {
+      const savedToken = await keytar.getPassword(APP_NAME, "githubToken");
+      const valid = Boolean(newToken) || Boolean(savedToken);
+      return valid || "Github token is required";
+    }
   },
   {
     name: "branchNameTemplate",
+    message: "Branch name template",
     default: `${username}/{number}/{title}`,
     validate: Boolean,
   },
