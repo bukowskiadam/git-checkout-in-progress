@@ -26,7 +26,7 @@ const configSchema = [
       const savedToken = await keytar.getPassword(APP_NAME, "githubToken");
       const valid = Boolean(newToken) || Boolean(savedToken);
       return valid || "Github token is required";
-    }
+    },
   },
   {
     name: "branchNameTemplate",
@@ -41,8 +41,8 @@ async function promptUserSettings(existingConfig, schema = configSchema) {
     const settings = await inquirer.prompt(schema, existingConfig);
     return settings;
   } catch (error) {
-    if (error.name === 'ExitPromptError') {
-      console.log('\nOperation cancelled by user.');
+    if (error.name === "ExitPromptError") {
+      console.log("\nOperation cancelled by user.");
       process.exit(0);
     }
     throw error;
@@ -69,7 +69,7 @@ export async function getSettings() {
   }
 
   // remove old ZenHub API URL and credentials if it exists
-  if ('zenhubApiUrl' in settings) {
+  if ("zenhubApiUrl" in settings) {
     delete settings.zenhubApiUrl;
     await saveSettings(settings);
     await keytar.deletePassword(APP_NAME, "zenhubApiUrl");

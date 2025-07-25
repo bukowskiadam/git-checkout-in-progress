@@ -2,7 +2,7 @@
 
 import { program } from "commander";
 
-import { run, getSettings, reconfigure, clearSettings } from "./src/index.js";
+import { clearSettings, getSettings, reconfigure, run } from "./src/index.js";
 
 program
   .name("git cip")

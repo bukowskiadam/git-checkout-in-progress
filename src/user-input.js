@@ -6,7 +6,7 @@ export function askPrefilledQuestion(prompt, value) {
     output: process.stdout,
   });
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     readline.question(prompt, (name) => {
       readline.close();
       resolve(name);

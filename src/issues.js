@@ -1,9 +1,5 @@
 function formatIssue(issue) {
-  return [
-    issue.repoName,
-    `#${issue.number}: `,
-    issue.title,
-  ].join("");
+  return [issue.repoName, `#${issue.number}: `, issue.title].join("");
 }
 
 export async function getIssuesChoiceList({ github }) {

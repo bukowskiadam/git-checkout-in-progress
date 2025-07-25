@@ -11,17 +11,17 @@ export function Github({ githubApiUrl, githubToken }) {
           authorization: `token ${githubToken}`,
         },
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       return await response.json();
     } catch (error) {
       panic(
         "We've got a problem fetching your github issues list.\n" +
           "Make sure you've got some issues assigned to you or your token has control over private repositories.\n",
-        error.toString()
+        error.toString(),
       );
     }
   };
