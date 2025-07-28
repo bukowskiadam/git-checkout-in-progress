@@ -1,6 +1,6 @@
 {
   "name": "git-cip",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Allows you to easily create a new branch based on one of your opened github issues",
   "type": "module",
   "main": "index.js",

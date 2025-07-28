@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2025-07-28
+
 ### Added
 - Enhanced issue display with GitHub project information
 - Added `{org}` and `{repo}` magic variables to branch name template for organization and repository names
