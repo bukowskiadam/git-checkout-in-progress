@@ -35,6 +35,8 @@ During the first run you'll get prompted for all needed configuration options.
 - template - branch name template of your choice. Can contain following replacement tags:
   - `{number}` - issue number
   - `{title}` - issue title containing only letters and numbers and a dash character (`-`) which replaces all other characters
+  - `{org}` - organization or owner name from the issue's repository
+  - `{repo}` - repository name from the issue's repository
 
 **Config storage**
 

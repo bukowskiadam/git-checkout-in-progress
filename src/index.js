@@ -80,9 +80,14 @@ async function run() {
     throw error;
   }
 
+  // Extract org and repo from repoName (format: "owner/repo")
+  const [org, repo] = issue.repoName.split("/");
+
   const branchName = settings.branchNameTemplate
     .replace("{number}", issue.number)
-    .replace("{title}", createTitle(issue.title));
+    .replace("{title}", createTitle(issue.title))
+    .replace("{org}", org)
+    .replace("{repo}", repo);
 
   const adjustedBranchName = await askPrefilledQuestion(
     "\nNow you can edit your branch name\n\nBranch name: ",

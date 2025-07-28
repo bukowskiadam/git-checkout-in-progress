@@ -31,7 +31,7 @@ const configSchema = [
   {
     name: "branchNameTemplate",
     message: "Branch name template",
-    default: `${username}/{number}/{title}`,
+    default: `${username}/{org}/{repo}/{number}/{title}`,
     validate: Boolean,
   },
 ];
